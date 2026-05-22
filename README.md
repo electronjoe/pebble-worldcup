@@ -6,8 +6,16 @@ A Pebble watchapp/watchface written in C using the Pebble SDK.
 
 ```sh
 pebble build                          # build for all targetPlatforms
-pebble install --emulator emery       # install on the emery emulator
-pebble install --phone <ip>           # install to a paired phone
+pebble install --emulator flint       # install on the pebble time duo emulator
+```
+
+### To Watch over Cloud
+
+- Pebble app on phone, settines -> General -> Sign in Pebble Account /w Google
+
+```sh
+pebble login                          # Log in to Google account
+pebble install --cloudpebble          # Install to phone
 ```
 
 ## Target platforms
