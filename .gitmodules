@@ -1,3 +1,18 @@
 [submodule "resources/PebbleOS"]
 	path = resources/PebbleOS
 	url = https://github.com/coredevices/PebbleOS
+[submodule "resources/examples/cards-example"]
+	path = resources/examples/cards-example
+	url = https://github.com/pebble-examples/cards-example.git
+[submodule "resources/examples/ui-patterns"]
+	path = resources/examples/ui-patterns
+	url = https://github.com/pebble-examples/ui-patterns.git
+[submodule "resources/examples/pebble-faces"]
+	path = resources/examples/pebble-faces
+	url = https://github.com/pebble-examples/pebble-faces.git
+[submodule "resources/examples/watchface-tutorial"]
+	path = resources/examples/watchface-tutorial
+	url = https://github.com/pebble-examples/watchface-tutorial.git
+[submodule "resources/examples/app-font-browser"]
+	path = resources/examples/app-font-browser
+	url = https://github.com/pebble-examples/app-font-browser.git

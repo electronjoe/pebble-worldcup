@@ -260,6 +260,32 @@ plus many internal services with no app-side equivalent (`activity/`,
 - `src/fw/process_management/pebble_process_info.h` — current SDK
   major/minor version.
 
+## Example apps (`resources/examples/`)
+
+Each entry is a standalone Pebble project (git submodule). Use these as
+copy-paste-ready references for the listed APIs / patterns.
+
+- **`cards-example/`** — scrolling weather-card UI built on the **Pebble
+  Draw Commands (PDC)** API. Best reference for vector graphics
+  (`gdraw_command_*`) and the `svg2pdc.py` toolchain in
+  `tools/svg2pdc.py` that converts SVGs into the `.pdc` resource format.
+- **`ui-patterns/`** — menu launcher into the recommended UI patterns:
+  checkbox list, radio-button list, message dialog, choice dialog, list
+  hint message, PIN entry. Best reference for `menu_layer`,
+  `action_bar_layer`, dialogs, and selection windows.
+- **`pebble-faces/`** — download PNGs from the internet via PebbleKit JS,
+  decode with bundled uPNG, and display. Reference for `AppMessage` data
+  transfer of binary payloads, `netdownload` pattern, and runtime PNG →
+  `GBitmap` decoding.
+- **`watchface-tutorial/`** — completed result of the official 3-part
+  watchface getting-started tutorial; weather watchface with OWM API
+  fetch in `src/js/app.js`. Reference for the minimal watchface shell
+  (tick timer + text layer + bitmap background) plus the simplest
+  end-to-end JS-fetch → C-display flow.
+- **`app-font-browser/`** — cycles through every built-in system font.
+  Reference for the `fonts_get_system_font` constants and the
+  `Clicks` API (`window_single_click_subscribe` for up/down navigation).
+
 ## When to look at PebbleOS vs. the public SDK headers
 
 - Use `pebble.h` (from the Pebble SDK) as the API surface you are coding
