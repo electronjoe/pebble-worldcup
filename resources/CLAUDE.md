@@ -286,6 +286,50 @@ copy-paste-ready references for the listed APIs / patterns.
   Reference for the `fonts_get_system_font` constants and the
   `Clicks` API (`window_single_click_subscribe` for up/down navigation).
 
+## Best practices (`resources/bp-*.md`)
+
+Pebble development best practices, split by lifecycle phase. Load the
+relevant file when working on that phase — each is self-contained with
+guidance, code examples, and a checklist.
+
+- **[`bp-platform.md`](bp-platform.md)** — Hardware specs (Aplite through
+  Emery), memory/resource limits per platform, cross-platform compile-time
+  macros (`PBL_IF_COLOR_ELSE`, `PBL_PLATFORM_*`), and round-vs-rectangular
+  layout considerations. Consult when choosing target platforms or sizing
+  resources.
+
+- **[`bp-sdk-tools.md`](bp-sdk-tools.md)** — SDK setup, `pebble` CLI
+  commands (build/install/logs), PebbleKit JS communication
+  (`Pebble.sendAppMessage`), Timeline Web API pins, and system fonts.
+  Consult when setting up the dev environment or wiring phone↔watch comms.
+
+- **[`bp-ui-design.md`](bp-ui-design.md)** — Standard widgets (MenuLayer,
+  ActionBarLayer, ScrollLayer, StatusBarLayer), interaction patterns
+  (cards, lists, action bars), typography sizes (28/24/18/14pt), icon
+  dimensions, the 64-color palette, `gcolor_legible_over()`, and good/bad
+  design examples. Consult when designing screens or choosing UI
+  components.
+
+- **[`bp-performance.md`](bp-performance.md)** — Tick timer intervals
+  (MINUTE_UNIT vs SECOND_UNIT), animation budgets, sensor batching,
+  AppMessage/BT power management (SNIFF_INTERVAL), backlight/vibration
+  power costs, and memory management (`heap_bytes_free`, destroy
+  patterns). Consult when optimizing battery life or debugging memory
+  issues.
+
+- **[`bp-testing.md`](bp-testing.md)** — Emulator vs device testing, `APP_LOG`
+  / `console.log` usage, GDB debugging, heap profiling, accessibility
+  (legibility, haptics, colorblind support, dictation fallback), and
+  in-context testing (one-handed, varied lighting). Consult when writing
+  tests or validating on hardware.
+
+- **[`bp-release.md`](bp-release.md)** — PBW packaging (image compression,
+  debug symbol removal), resource size limits, `package.json` versioning,
+  Timeline API key setup (sandbox vs production), and store submission.
+  Consult when preparing a release.
+
+The original combined document is [`BEST_PRACTICES.md`](BEST_PRACTICES.md).
+
 ## When to look at PebbleOS vs. the public SDK headers
 
 - Use `pebble.h` (from the Pebble SDK) as the API surface you are coding
