@@ -1,5 +1,12 @@
 # Pebble Smartwatch App Programming: Best Practices
 
+> **Archival note (2026-06):** This is the original combined document, kept for
+> provenance. The split `bp-*.md` files are the maintained versions — several
+> factual errors found here (Chalk listed as B/W, Emery as round, a
+> nonexistent `TextInput` API, "Raster Gothic Condensed", `menu_cell_basic_draw`
+> font sizes) have been corrected there but **not** here. Prefer the `bp-*.md`
+> files.
+
 **Executive Summary:** Pebble apps and watchfaces must balance rich functionality with the platform’s tight constraints (small screens, limited memory/battery, and varied hardware). Design should focus on *glanceable*, minimal UIs with high contrast and large typography, using standard SDK widgets (menus, cards, ActionBar) where possible【3†L72-L84】【39†L183-L191】. In code, exploit compile-time macros (e.g. `PBL_IF_COLOR_ELSE`) to adapt to B/W vs color hardware【1†L89-L95】【1†L99-L102】. Conserve power by minimizing wake-ups (e.g. subscribe only to `MINUTE_UNIT` ticks, not seconds【6†L107-L115】), batching sensor updates, and limiting Bluetooth/vibration use【6†L69-L77】【8†L179-L188】. For color Pebbles, remember the 64‐color palette (2 bits per R/G/B channel)【42†L185-L193】 and use color only for meaningfully distinct information (avoid red/green cues alone【3†L86-L90】). Test on all screen shapes (round vs rectangular) and in motion. Use logging and the CLI’s tools (`pebble install`, `pebble logs`) for debugging【45†L112-L120】【45†L139-L147】. Following guidelines from Pebble’s documentation and high-level smartwatch HIGs (Apple watchOS, Wear OS) ensures legibility, fast interactions, and consistent UI patterns【20†L95-L102】【17†L557-L566】.
 
 ## Platform Constraints & Hardware Differences

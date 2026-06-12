@@ -251,6 +251,21 @@ plus many internal services with no app-side equivalent (`activity/`,
 `alarms/`, `voice_endpoint.h`, …). Useful when tracing what happens
 *after* the syscall — but apps cannot call these directly.
 
+### `src/fw/apps/system/` — the built-in apps
+
+Source of the apps that ship on the watch (Music `music.c`, `alarms/`,
+`weather/`, `workout/`, `health/`, `notifications.c`, `reminders/`,
+`send_text/`, `settings/`, `timeline/`, `watchfaces.c`, `launcher/`).
+Apps cannot link against this code, but it is the best reference for
+**how a default app is supposed to look and behave**: action-bar icon
+assignments, click-config providers and repeat intervals, accent colors,
+status-bar styling, dialog usage. The distilled conventions live in
+[`bp-ui-design.md`](bp-ui-design.md) ("Making Your App Feel Built-In");
+come here when you need the exact implementation. The standard action-bar
+icon PNGs are under `resources/normal/base/images/` and
+`resources/common/base/images/` (resource map:
+`resources/normal/base/resource_map.json`).
+
 ### Other
 
 - `docs/reference/` — reference documentation seed material.
@@ -305,10 +320,13 @@ guidance, code examples, and a checklist.
 
 - **[`bp-ui-design.md`](bp-ui-design.md)** — Standard widgets (MenuLayer,
   ActionBarLayer, ScrollLayer, StatusBarLayer), interaction patterns
-  (cards, lists, action bars), typography sizes (28/24/18/14pt), icon
-  dimensions, the 64-color palette, `gcolor_legible_over()`, and good/bad
-  design examples. Consult when designing screens or choosing UI
-  components.
+  (cards, lists, action bars), **built-in app conventions** (per-button
+  paradigms, action-bar icon assignments and sizes, accent-color theming,
+  ActionMenu/dialog/status-bar usage — sourced from the firmware's own
+  apps), typography sizes (28/24/18/14pt), icon dimensions, the 64-color
+  palette, `gcolor_legible_over()`, and good/bad design examples. Consult
+  when designing screens, choosing UI components, or making an app feel
+  like a default app.
 
 - **[`bp-performance.md`](bp-performance.md)** — Tick timer intervals
   (MINUTE_UNIT vs SECOND_UNIT), animation budgets, sensor batching,

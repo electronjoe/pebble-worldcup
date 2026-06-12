@@ -2,9 +2,9 @@
 
 ## Pebble SDK & RTOS
 
-Apps are written in C (SDK 3/4) or JavaScript (PebbleKit JS). The RTOS is proprietary but supports a Window/Layer UI system. Leverage system UI elements and services (Accelerometer, AppMessage, etc.).
+Apps are written in C (SDK 3/4) or JavaScript (PebbleKit JS). The OS (PebbleOS, FreeRTOS-based, now open source — vendored at `resources/PebbleOS/`) provides a Window/Layer UI system. Leverage system UI elements and services (Accelerometer, AppMessage, etc.).
 
-The common system font ("Raster Gothic Condensed") is optimized for Pebble's displays【34†L133-L136】. Custom fonts may be used but consume RAM. The SDK provides `fonts_get_system_font` and `fonts_load_custom_font` APIs【34†L129-L138】.
+The common system font ("Raster Gothic" — the `FONT_KEY_GOTHIC_*` family) is optimized for Pebble's displays【34†L133-L136】. Custom fonts may be used but consume RAM. The SDK provides `fonts_get_system_font` and `fonts_load_custom_font` APIs【34†L129-L138】.
 
 ## PebbleKit JS & Cloud APIs
 
