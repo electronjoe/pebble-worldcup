@@ -1,6 +1,11 @@
-# bringup
+# pebble-worldcup
 
-A Pebble watchapp/watchface written in C using the Pebble SDK.
+A Pebble 2 Duo (flint) watchface showing the time plus the current or next
+FIFA World Cup 2026 match, fetched from
+[openfootball/worldcup.json](https://github.com/openfootball/worldcup.json)
+by the phone and cached on the watch.
+
+Design spec: `docs/superpowers/specs/2026-07-03-worldcup-watchface-design.md`.
 
 ## Cloning
 
@@ -20,41 +25,28 @@ git submodule update --remote --merge
 
 ## Building & running
 
-```sh
-pebble build                          # build for all targetPlatforms
-pebble install --emulator flint       # install on the pebble time duo emulator
-```
+    pebble build                          # build for flint
+    pebble install --emulator flint       # run on the Pebble 2 Duo emulator
+    pebble install --cloudpebble          # install on a real watch via the cloud
 
-### To Watch over Cloud
+## Tests
 
-- Pebble app on phone, settines -> General -> Sign in Pebble Account /w Google
+    node tools/test_parser.js             # pure JS parse/filter/encode units
+    node tools/test_fixture.js            # end-to-end against the pinned fixture
 
-```sh
-pebble login                          # Log in to Google account
-pebble install --cloudpebble          # Install to phone
-```
+## Regenerating assets and data
 
-## Target platforms
+    node tools/gen_teams.js               # src/pkjs/teams.js from tools/worldcup.teams.json
+    python3 tools/gen_art.py              # hand-drawn 1-bit art PNGs
+    python3 tools/gen_flags.py            # 48 team flags + flag_resources.h + package.json media
 
-`targetPlatforms` in `package.json` controls which watches you build for. The
-modern Pebble hardware is **emery** (Pebble Time 2), **gabbro** (Pebble Round
-2), and **flint** (Pebble 2 Duo); the original Pebble platforms (aplite,
-basalt, chalk, diorite) are included by default for backwards compatibility.
+All generated outputs are committed; the scripts are run manually when the
+team list changes.
 
 ## Project layout
 
-```
-src/c/           C source for the watchapp
-src/pkjs/        PebbleKit JS (phone-side) source, if any
-worker_src/c/    Background worker source, if any
-resources/       Images, fonts, and other bundled resources
-package.json     Project metadata (UUID, platforms, resources, message keys)
-wscript          Build rules — usually no need to edit
-```
-
-By default this project is configured as a watchapp. To make it a watchface,
-set `pebble.watchapp.watchface` to `true` in `package.json`.
-
-## Documentation
-
-Full SDK docs, tutorials, and API reference: <https://developer.repebble.com>
+    src/c/            watch-side C (worldcup.c UI, match_store.c data/persist)
+    src/pkjs/         phone-side JS (index.js app, parser.js pure logic, teams.js generated)
+    tools/            generators, tests, fixtures
+    resources/images/ bundled 1-bit bitmaps (generated)
+    resources/        also holds vendored reference material (see resources/CLAUDE.md)
