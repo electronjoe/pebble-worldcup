@@ -22,6 +22,8 @@ static char s_teams_buf[16];
 static char s_when_buf[24];
 static const Match *s_display_match;
 static time_t s_last_refresh_req = 0;
+static int s_browse_offset;
+static AppTimer *s_browse_timer;
 
 static Layer *s_status_layer;
 static Layer *s_title_layer;
@@ -136,6 +138,24 @@ static GBitmap *prv_load_flag(const char *code, GBitmap *old, char *cached_code)
   return gbitmap_create_with_resource(flag_resource_for_code(code));
 }
 
+static void prv_browse_reset(void *context) {
+  s_browse_timer = NULL;
+  s_browse_offset = 0;
+  prv_refresh_display();
+}
+
+static void prv_tap_handler(AccelAxisType axis, int32_t direction) {
+  int count = match_store_upcoming_count(prv_now());
+  if (count <= 1) return;  /* nothing to browse */
+  s_browse_offset = (s_browse_offset + 1) % count;
+  prv_refresh_display();
+  if (s_browse_timer) {
+    app_timer_reschedule(s_browse_timer, 10000);
+  } else {
+    s_browse_timer = app_timer_register(10000, prv_browse_reset, NULL);
+  }
+}
+
 static void prv_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   prv_update_time();
   prv_update_date();
@@ -197,7 +217,12 @@ static void prv_window_unload(Window *window) {
 
 static void prv_refresh_display(void) {
   time_t now = prv_now();
-  s_display_match = match_store_display(now);
+  s_display_match = match_store_display_at(now, s_browse_offset);
+  if (!s_display_match && s_browse_offset > 0) {
+    /* queue shrank mid-browse: fall back to the soonest game */
+    s_browse_offset = 0;
+    s_display_match = match_store_display(now);
+  }
   if (s_display_match) {
     match_format_teams(s_display_match, s_teams_buf, sizeof(s_teams_buf));
     match_format_when(s_display_match, now, s_when_buf, sizeof(s_when_buf));
@@ -249,6 +274,7 @@ static void prv_inbox_received(DictionaryIterator *iter, void *context) {
   if (match_store_set_payload(t->value->data, t->length)) {
     APP_LOG(APP_LOG_LEVEL_INFO, "received %d matches (%u bytes)",
             match_store_count(), (unsigned)t->length);
+    s_browse_offset = 0;  /* list may have reordered; a stale offset lies */
     prv_refresh_display();
   } else {
     APP_LOG(APP_LOG_LEVEL_WARNING,
@@ -275,12 +301,15 @@ static void prv_init(void) {
   connection_service_subscribe((ConnectionHandlers) {
     .pebble_app_connection_handler = prv_connection_handler,
   });
+  accel_tap_service_subscribe(prv_tap_handler);
 }
 
 static void prv_deinit(void) {
   tick_timer_service_unsubscribe();
   battery_state_service_unsubscribe();
   connection_service_unsubscribe();
+  accel_tap_service_unsubscribe();
+  if (s_browse_timer) app_timer_cancel(s_browse_timer);
   window_destroy(s_window);
 }
 
