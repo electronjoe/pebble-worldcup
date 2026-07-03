@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "match_store.h"
 
 static Window *s_window;
 static TextLayer *s_time_layer;
@@ -37,6 +38,33 @@ static void prv_window_unload(Window *window) {
   text_layer_destroy(s_time_layer);
 }
 
+static void prv_refresh_display(void) {
+  /* Replaced with real UI updates in the match-box task; log for now. */
+  time_t now = time(NULL);
+  const Match *m = match_store_display(now);
+  if (m) {
+    char teams[16], when[24];
+    match_format_teams(m, teams, sizeof(teams));
+    match_format_when(m, now, when, sizeof(when));
+    APP_LOG(APP_LOG_LEVEL_INFO, "display match: %s | %s", teams, when);
+  } else {
+    APP_LOG(APP_LOG_LEVEL_INFO, "display match: none (count=%d)", match_store_count());
+  }
+}
+
+static void prv_inbox_received(DictionaryIterator *iter, void *context) {
+  Tuple *t = dict_find(iter, MESSAGE_KEY_MATCHES);
+  if (!t) return;
+  if (match_store_set_payload(t->value->data, t->length)) {
+    APP_LOG(APP_LOG_LEVEL_INFO, "received %d matches (%u bytes)",
+            match_store_count(), (unsigned)t->length);
+    prv_refresh_display();
+  } else {
+    APP_LOG(APP_LOG_LEVEL_WARNING,
+            "malformed match payload (%u bytes) - keeping previous", (unsigned)t->length);
+  }
+}
+
 static void prv_init(void) {
   s_window = window_create();
   window_set_background_color(s_window, GColorWhite);
@@ -44,6 +72,11 @@ static void prv_init(void) {
     .load = prv_window_load,
     .unload = prv_window_unload,
   });
+
+  match_store_init();
+  app_message_register_inbox_received(prv_inbox_received);
+  app_message_open(4096, 64);
+
   window_stack_push(s_window, true);
 
   tick_timer_service_subscribe(MINUTE_UNIT, prv_tick_handler);
