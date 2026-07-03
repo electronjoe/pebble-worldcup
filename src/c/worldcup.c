@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include <ctype.h>
 #include "match_store.h"
 #include "flag_resources.h"
 
@@ -22,6 +23,12 @@ static char s_when_buf[24];
 static const Match *s_display_match;
 static time_t s_last_refresh_req = 0;
 
+static Layer *s_status_layer;
+static Layer *s_title_layer;
+static Layer *s_art_layer;
+static GBitmap *s_ball_small, *s_ball_large, *s_trophy, *s_bt_icon;
+static char s_date_buf[16];
+
 static void prv_refresh_display(void);
 static void prv_matchbox_update(Layer *layer, GContext *ctx);
 
@@ -34,6 +41,80 @@ static void prv_update_time(void) {
     memmove(s_time_buf, s_time_buf + 1, strlen(s_time_buf));
   }
   text_layer_set_text(s_time_layer, s_time_buf);
+}
+
+static void prv_update_date(void) {
+  time_t now = prv_now();
+  struct tm *lt = localtime(&now);
+  strftime(s_date_buf, sizeof(s_date_buf), "%a %b %e", lt);
+  for (char *p = s_date_buf; *p; p++) *p = toupper((unsigned char)*p);
+}
+
+static void prv_status_update(Layer *layer, GContext *ctx) {
+  GRect b = layer_get_bounds(layer);
+  graphics_context_set_fill_color(ctx, GColorBlack);
+  graphics_fill_rect(ctx, b, 0, GCornerNone);
+  graphics_context_set_text_color(ctx, GColorWhite);
+
+  graphics_draw_text(ctx, s_date_buf, fonts_get_system_font(FONT_KEY_GOTHIC_14),
+                     GRect(4, -2, 76, 16),
+                     GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, NULL);
+
+  BatteryChargeState charge = battery_state_service_peek();
+  char pct[6];
+  snprintf(pct, sizeof(pct), "%d%%", charge.charge_percent);
+  graphics_draw_text(ctx, pct, fonts_get_system_font(FONT_KEY_GOTHIC_14),
+                     GRect(b.size.w - 54, -2, 32, 16),
+                     GTextOverflowModeTrailingEllipsis, GTextAlignmentRight, NULL);
+
+  GRect batt = GRect(b.size.w - 18, 4, 14, 8);
+  graphics_context_set_stroke_color(ctx, GColorWhite);
+  graphics_draw_rect(ctx, batt);
+  graphics_context_set_fill_color(ctx, GColorWhite);
+  graphics_fill_rect(ctx, GRect(batt.origin.x + batt.size.w, batt.origin.y + 2, 2, 4),
+                     0, GCornerNone);
+  int fill = (batt.size.w - 4) * charge.charge_percent / 100;
+  graphics_fill_rect(ctx, GRect(batt.origin.x + 2, batt.origin.y + 2, fill, 4),
+                     0, GCornerNone);
+
+  if (!connection_service_peek_pebble_app_connection() && s_bt_icon) {
+    graphics_context_set_compositing_mode(ctx, GCompOpAssign);
+    graphics_draw_bitmap_in_rect(ctx, s_bt_icon, GRect(82, 2, 7, 11));
+  }
+}
+
+static void prv_title_update(Layer *layer, GContext *ctx) {
+  GRect b = layer_get_bounds(layer);
+  graphics_context_set_text_color(ctx, GColorBlack);
+  graphics_draw_text(ctx, "WORLD CUP",
+                     fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD),
+                     GRect(0, -4, b.size.w, 20),
+                     GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL);
+  if (s_ball_small) {
+    graphics_context_set_compositing_mode(ctx, GCompOpAssign);
+    graphics_draw_bitmap_in_rect(ctx, s_ball_small, GRect(18, 5, 9, 9));
+    graphics_draw_bitmap_in_rect(ctx, s_ball_small, GRect(b.size.w - 27, 5, 9, 9));
+  }
+}
+
+static void prv_art_update(Layer *layer, GContext *ctx) {
+  GRect b = layer_get_bounds(layer);
+  graphics_context_set_compositing_mode(ctx, GCompOpAssign);
+  int group_w = 24 + 6 + 16;  /* trophy + gap + ball */
+  int x0 = (b.size.w - group_w) / 2;
+  if (s_trophy) graphics_draw_bitmap_in_rect(ctx, s_trophy, GRect(x0, 1, 24, 35));
+  if (s_ball_large) {
+    graphics_draw_bitmap_in_rect(ctx, s_ball_large,
+                                 GRect(x0 + 24 + 6, b.size.h - 18, 16, 16));
+  }
+}
+
+static void prv_battery_handler(BatteryChargeState charge) {
+  if (s_status_layer) layer_mark_dirty(s_status_layer);
+}
+
+static void prv_connection_handler(bool connected) {
+  if (s_status_layer) layer_mark_dirty(s_status_layer);
 }
 
 static void prv_maybe_request_refresh(time_t now) {
@@ -57,6 +138,8 @@ static GBitmap *prv_load_flag(const char *code, GBitmap *old, char *cached_code)
 
 static void prv_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   prv_update_time();
+  prv_update_date();
+  if (s_status_layer) layer_mark_dirty(s_status_layer);
   prv_refresh_display();
 }
 
@@ -71,6 +154,25 @@ static void prv_window_load(Window *window) {
   text_layer_set_text_color(s_time_layer, GColorBlack);
   layer_add_child(window_layer, text_layer_get_layer(s_time_layer));
 
+  s_ball_small = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BALL_SMALL);
+  s_ball_large = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BALL_LARGE);
+  s_trophy = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_TROPHY);
+  s_bt_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BT_OFF);
+
+  s_status_layer = layer_create(GRect(0, 0, bounds.size.w, 16));
+  layer_set_update_proc(s_status_layer, prv_status_update);
+  layer_add_child(window_layer, s_status_layer);
+
+  s_title_layer = layer_create(GRect(0, 66, bounds.size.w, 18));
+  layer_set_update_proc(s_title_layer, prv_title_update);
+  layer_add_child(window_layer, s_title_layer);
+
+  s_art_layer = layer_create(GRect(0, 86, bounds.size.w, 38));
+  layer_set_update_proc(s_art_layer, prv_art_update);
+  layer_add_child(window_layer, s_art_layer);
+
+  prv_update_date();
+
   s_matchbox_layer = layer_create(GRect(4, 126, 136, 38));
   layer_set_update_proc(s_matchbox_layer, prv_matchbox_update);
   layer_add_child(window_layer, s_matchbox_layer);
@@ -81,7 +183,14 @@ static void prv_window_load(Window *window) {
 
 static void prv_window_unload(Window *window) {
   text_layer_destroy(s_time_layer);
+  layer_destroy(s_status_layer);
+  layer_destroy(s_title_layer);
+  layer_destroy(s_art_layer);
   layer_destroy(s_matchbox_layer);
+  gbitmap_destroy(s_ball_small);
+  gbitmap_destroy(s_ball_large);
+  gbitmap_destroy(s_trophy);
+  gbitmap_destroy(s_bt_icon);
   if (s_flag1) { gbitmap_destroy(s_flag1); s_flag1 = NULL; }
   if (s_flag2) { gbitmap_destroy(s_flag2); s_flag2 = NULL; }
 }
@@ -162,10 +271,16 @@ static void prv_init(void) {
   window_stack_push(s_window, true);
 
   tick_timer_service_subscribe(MINUTE_UNIT, prv_tick_handler);
+  battery_state_service_subscribe(prv_battery_handler);
+  connection_service_subscribe((ConnectionHandlers) {
+    .pebble_app_connection_handler = prv_connection_handler,
+  });
 }
 
 static void prv_deinit(void) {
   tick_timer_service_unsubscribe();
+  battery_state_service_unsubscribe();
+  connection_service_unsubscribe();
   window_destroy(s_window);
 }
 
