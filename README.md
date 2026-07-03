@@ -5,7 +5,15 @@ FIFA World Cup 2026 match, fetched from
 [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json)
 by the phone and cached on the watch.
 
-<img src="screenshot.png" alt="World Cup watchface running on a Pebble watch" width="420">
+## Screenshots
+
+**Actual emulator status**
+
+<img src="docs/assets/worldcup-watchface-emulator.png" alt="World Cup watchface running in the Pebble emulator" width="144">
+
+**Generated product render**
+
+<img src="docs/assets/worldcup-watchface-render.png" alt="Generated render of the World Cup watchface on a Pebble watch" width="420">
 
 Design spec: `docs/superpowers/specs/2026-07-03-worldcup-watchface-design.md`.
 
