@@ -2,7 +2,9 @@
   "name": "worldcup",
   "author": "Scott Moeller",
   "version": "1.0.0",
-  "keywords": ["pebble-app"],
+  "keywords": [
+    "pebble-app"
+  ],
   "private": true,
   "dependencies": {},
   "pebble": {
@@ -21,7 +23,273 @@
       "REQUEST_REFRESH"
     ],
     "resources": {
-      "media": []
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "FLAG_ALG",
+          "file": "images/flag_ALG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_ARG",
+          "file": "images/flag_ARG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_AUS",
+          "file": "images/flag_AUS.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_AUT",
+          "file": "images/flag_AUT.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_BEL",
+          "file": "images/flag_BEL.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_BIH",
+          "file": "images/flag_BIH.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_BRA",
+          "file": "images/flag_BRA.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_CAN",
+          "file": "images/flag_CAN.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_CIV",
+          "file": "images/flag_CIV.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_COD",
+          "file": "images/flag_COD.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_COL",
+          "file": "images/flag_COL.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_CPV",
+          "file": "images/flag_CPV.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_CRO",
+          "file": "images/flag_CRO.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_CUW",
+          "file": "images/flag_CUW.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_CZE",
+          "file": "images/flag_CZE.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_ECU",
+          "file": "images/flag_ECU.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_EGY",
+          "file": "images/flag_EGY.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_ENG",
+          "file": "images/flag_ENG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_ESP",
+          "file": "images/flag_ESP.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_FRA",
+          "file": "images/flag_FRA.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_GER",
+          "file": "images/flag_GER.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_GHA",
+          "file": "images/flag_GHA.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_HAI",
+          "file": "images/flag_HAI.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_IRN",
+          "file": "images/flag_IRN.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_IRQ",
+          "file": "images/flag_IRQ.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_JOR",
+          "file": "images/flag_JOR.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_JPN",
+          "file": "images/flag_JPN.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_KOR",
+          "file": "images/flag_KOR.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_KSA",
+          "file": "images/flag_KSA.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_MAR",
+          "file": "images/flag_MAR.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_MEX",
+          "file": "images/flag_MEX.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_NED",
+          "file": "images/flag_NED.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_NOR",
+          "file": "images/flag_NOR.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_NZL",
+          "file": "images/flag_NZL.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_PAN",
+          "file": "images/flag_PAN.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_PAR",
+          "file": "images/flag_PAR.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_POR",
+          "file": "images/flag_POR.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_QAT",
+          "file": "images/flag_QAT.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_RSA",
+          "file": "images/flag_RSA.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_SCO",
+          "file": "images/flag_SCO.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_SEN",
+          "file": "images/flag_SEN.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_SUI",
+          "file": "images/flag_SUI.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_SWE",
+          "file": "images/flag_SWE.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_TUN",
+          "file": "images/flag_TUN.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_TUR",
+          "file": "images/flag_TUR.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_URU",
+          "file": "images/flag_URU.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_USA",
+          "file": "images/flag_USA.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_UZB",
+          "file": "images/flag_UZB.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "FLAG_TBD",
+          "file": "images/flag_TBD.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_BALL_SMALL",
+          "file": "images/ball_small.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_BALL_LARGE",
+          "file": "images/ball_large.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_TROPHY",
+          "file": "images/trophy.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_BT_OFF",
+          "file": "images/bt_off.png"
+        }
+      ]
     }
   }
 }
