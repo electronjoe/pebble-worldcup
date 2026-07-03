@@ -5,7 +5,19 @@ FIFA World Cup 2026 match, fetched from
 [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json)
 by the phone and cached on the watch.
 
+<img src="screenshot.png" alt="World Cup watchface running on a Pebble watch" width="420">
+
 Design spec: `docs/superpowers/specs/2026-07-03-worldcup-watchface-design.md`.
+
+## Features
+
+- Shows the current or next World Cup match with team flags, team codes, and kickoff text.
+- Caches the latest match payload on the watch so the face still renders without the phone.
+- Flicking the wrist steps forward through upcoming matches; the match box shows a `+N`
+  marker while browsing and snaps back to the soonest match after 10 seconds.
+- Kickoffs more than a week away use month/day labels, such as `JUL 19`, instead of
+  ambiguous weekday names.
+- Targets both Pebble 2 Duo (`flint`) and Pebble Time 2 (`emery`).
 
 ## Cloning
 
@@ -25,7 +37,7 @@ git submodule update --remote --merge
 
 ## Building & running
 
-    pebble build                          # build for flint
+    pebble build                          # build for flint and emery
     pebble install --emulator flint       # run on the Pebble 2 Duo emulator
     pebble install --cloudpebble          # install on a real watch via the cloud
 
