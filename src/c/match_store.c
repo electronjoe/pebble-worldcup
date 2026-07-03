@@ -114,8 +114,14 @@ void match_format_when(const Match *m, time_t now, char *buf, size_t buflen) {
     strcpy(prefix, "TODAY");
   } else if (days == 1) {
     strcpy(prefix, "TOMORROW");
+  } else if (days >= 7) {
+    /* weekday names are only unambiguous within a week */
+    char mon[8];
+    strftime(mon, sizeof(mon), "%b", &kt);
+    for (char *p = mon; *p; p++) *p = toupper((unsigned char)*p);
+    snprintf(prefix, sizeof(prefix), "%s %d", mon, kt.tm_mday);
   } else {
-    strftime(prefix, sizeof(prefix), "%a", &kt);  /* kickoffs are within a week */
+    strftime(prefix, sizeof(prefix), "%a", &kt);
     for (char *p = prefix; *p; p++) *p = toupper((unsigned char)*p);
   }
 
