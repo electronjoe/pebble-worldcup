@@ -71,11 +71,26 @@ int match_store_count(void) {
   return s_count;
 }
 
-const Match *match_store_display(time_t now) {
+const Match *match_store_display_at(time_t now, int offset) {
   for (int i = 0; i < s_count; i++) {
-    if (now < s_matches[i].kickoff + MATCH_DISPLAY_WINDOW_SEC) return &s_matches[i];
+    if (now < s_matches[i].kickoff + MATCH_DISPLAY_WINDOW_SEC) {
+      if (offset == 0) return &s_matches[i];
+      offset--;
+    }
   }
   return NULL;
+}
+
+const Match *match_store_display(time_t now) {
+  return match_store_display_at(now, 0);
+}
+
+int match_store_upcoming_count(time_t now) {
+  int n = 0;
+  for (int i = 0; i < s_count; i++) {
+    if (now < s_matches[i].kickoff + MATCH_DISPLAY_WINDOW_SEC) n++;
+  }
+  return n;
 }
 
 void match_format_teams(const Match *m, char *buf, size_t buflen) {
