@@ -1,29 +1,24 @@
 {
-  "name": "bringup",
-  "author": "MakeAwesomeHappen",
+  "name": "worldcup",
+  "author": "Scott Moeller",
   "version": "1.0.0",
   "keywords": ["pebble-app"],
   "private": true,
   "dependencies": {},
   "pebble": {
-    "displayName": "bringup",
+    "displayName": "World Cup",
     "uuid": "50541c9c-0ae7-4a89-9e29-a6649b21969e",
     "sdkVersion": "3",
     "enableMultiJS": true,
     "targetPlatforms": [
-      "aplite",
-      "basalt",
-      "chalk",
-      "diorite",
-      "emery",
-      "flint",
-      "gabbro"
+      "flint"
     ],
     "watchapp": {
-      "watchface": false
+      "watchface": true
     },
     "messageKeys": [
-      "dummy"
+      "MATCHES",
+      "REQUEST_REFRESH"
     ],
     "resources": {
       "media": []
