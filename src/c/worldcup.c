@@ -266,6 +266,14 @@ static void prv_matchbox_update(Layer *layer, GContext *ctx) {
                      fonts_get_system_font(FONT_KEY_GOTHIC_14),
                      GRect(0, 17, b.size.w, 16),
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL);
+
+  if (s_browse_offset > 0) {
+    char marker[12];
+    snprintf(marker, sizeof(marker), "+%d", s_browse_offset);
+    graphics_draw_text(ctx, marker, fonts_get_system_font(FONT_KEY_GOTHIC_14),
+                       GRect(4, 17, 24, 16),
+                       GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, NULL);
+  }
 }
 
 static void prv_inbox_received(DictionaryIterator *iter, void *context) {
